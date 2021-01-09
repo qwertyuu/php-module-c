@@ -50,3 +50,8 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+build/
+.libs/
+.vscode/
+autom4te.cache/
