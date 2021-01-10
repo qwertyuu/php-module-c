@@ -3,6 +3,9 @@
 /* Whether to build php_factorial as dynamic module */
 #undef COMPILE_DL_PHP_FACTORIAL
 
+/* Whether to build php_sort as dynamic module */
+#undef COMPILE_DL_PHP_SORT
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 

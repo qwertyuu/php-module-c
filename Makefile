@@ -4,14 +4,16 @@ top_srcdir = /home/raphael/code/php-module-c
 top_builddir = /home/raphael/code/php-module-c
 EGREP = /usr/bin/grep -E
 SED = /usr/bin/sed
-CONFIGURE_COMMAND = './configure' '--enable-php-factorial'
-CONFIGURE_OPTIONS = '--enable-php-factorial'
+CONFIGURE_COMMAND = './configure' '--enable-php-sort'
+CONFIGURE_OPTIONS = '--enable-php-sort'
 SHLIB_SUFFIX_NAME = so
 SHLIB_DL_SUFFIX_NAME = so
 AWK = nawk
 shared_objects_php_factorial = php_factorial.lo
-PHP_PECL_EXTENSION = php_factorial
-PHP_MODULES = $(phplibdir)/php_factorial.la
+PHP_PECL_EXTENSION = php_sort
+shared_objects_php_sort = php_sort.lo
+PHP_PECL_EXTENSION = php_sort
+PHP_MODULES = $(phplibdir)/php_factorial.la $(phplibdir)/php_sort.la
 PHP_ZEND_EX =
 all_targets = $(PHP_MODULES) $(PHP_ZEND_EX)
 install_targets = install-modules install-headers
@@ -194,4 +196,12 @@ $(phplibdir)/php_factorial.la: ./php_factorial.la
 
 ./php_factorial.la: $(shared_objects_php_factorial) $(PHP_FACTORIAL_SHARED_DEPENDENCIES)
 	$(LIBTOOL) --mode=link $(CC) $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS)  -o $@ -export-dynamic -avoid-version -prefer-pic -module -rpath $(phplibdir) $(EXTRA_LDFLAGS) $(shared_objects_php_factorial) $(PHP_FACTORIAL_SHARED_LIBADD)
+
+php_sort.lo: /home/raphael/code/php-module-c/php_sort.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/home/raphael/code/php-module-c $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /home/raphael/code/php-module-c/php_sort.c -o php_sort.lo 
+$(phplibdir)/php_sort.la: ./php_sort.la
+	$(LIBTOOL) --mode=install cp ./php_sort.la $(phplibdir)
+
+./php_sort.la: $(shared_objects_php_sort) $(PHP_SORT_SHARED_DEPENDENCIES)
+	$(LIBTOOL) --mode=link $(CC) $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS)  -o $@ -export-dynamic -avoid-version -prefer-pic -module -rpath $(phplibdir) $(EXTRA_LDFLAGS) $(shared_objects_php_sort) $(PHP_SORT_SHARED_LIBADD)
 

@@ -6,3 +6,11 @@ $(phplibdir)/php_factorial.la: ./php_factorial.la
 ./php_factorial.la: $(shared_objects_php_factorial) $(PHP_FACTORIAL_SHARED_DEPENDENCIES)
 	$(LIBTOOL) --mode=link $(CC) $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS)  -o $@ -export-dynamic -avoid-version -prefer-pic -module -rpath $(phplibdir) $(EXTRA_LDFLAGS) $(shared_objects_php_factorial) $(PHP_FACTORIAL_SHARED_LIBADD)
 
+php_sort.lo: /home/raphael/code/php-module-c/php_sort.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/home/raphael/code/php-module-c $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /home/raphael/code/php-module-c/php_sort.c -o php_sort.lo 
+$(phplibdir)/php_sort.la: ./php_sort.la
+	$(LIBTOOL) --mode=install cp ./php_sort.la $(phplibdir)
+
+./php_sort.la: $(shared_objects_php_sort) $(PHP_SORT_SHARED_DEPENDENCIES)
+	$(LIBTOOL) --mode=link $(CC) $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS)  -o $@ -export-dynamic -avoid-version -prefer-pic -module -rpath $(phplibdir) $(EXTRA_LDFLAGS) $(shared_objects_php_sort) $(PHP_SORT_SHARED_LIBADD)
+

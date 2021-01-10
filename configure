@@ -857,6 +857,7 @@ enable_option_checking
 with_libdir
 with_php_config
 enable_php_factorial
+enable_php_sort
 enable_shared
 enable_static
 enable_fast_install
@@ -1505,6 +1506,7 @@ Optional Features and Packages:
   --with-libdir=NAME      Look for libraries in .../NAME rather than .../lib
   --with-php-config=PATH  Path to php-config [php-config]
  --enable-factorial-php Enable factorialPHP
+ --enable-sort-php Enable sortPHP
   --enable-shared=PKGS    Build shared libraries default=yes
   --enable-static=PKGS    Build static libraries default=yes
   --enable-fast-install=PKGS
@@ -4319,6 +4321,302 @@ EOF
 fi
 
 
+php_enable_php_sort=no
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking Whether to enable the sortPHP extension" >&5
+$as_echo_n "checking Whether to enable the sortPHP extension... " >&6; }
+# Check whether --enable-php_sort was given.
+if test "${enable_php_sort+set}" = set; then :
+  enableval=$enable_php_sort; PHP_PHP_SORT=$enableval
+else
+
+  PHP_PHP_SORT=no
+  test "$PHP_ENABLE_ALL" && PHP_PHP_SORT=$PHP_ENABLE_ALL
+
+fi
+
+
+
+ext_output="yes, shared"
+ext_shared=yes
+case $PHP_PHP_SORT in
+shared,*)
+  PHP_PHP_SORT=`echo "$PHP_PHP_SORT"|$SED 's/^shared,//'`
+  ;;
+shared)
+  PHP_PHP_SORT=yes
+  ;;
+no)
+  ext_output=no
+  ext_shared=no
+  ;;
+*)
+  ext_output=yes
+  ext_shared=no
+  ;;
+esac
+
+
+  ext_output="yes, shared"
+  ext_shared=yes
+  test "$PHP_PHP_SORT" = "no" && PHP_PHP_SORT=yes
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ext_output" >&5
+$as_echo "$ext_output" >&6; }
+
+
+
+
+if test "$PHP_sort" != "no"; then
+
+  ext_builddir=.
+  ext_srcdir=$abs_srcdir
+  ext_dir=""
+
+  ac_extra=
+
+  if test "$ext_shared" != "shared" && test "$ext_shared" != "yes" && test "" != "cli"; then
+    PHP_PHP_SORT_SHARED=no
+
+
+  case $ext_dir in
+  "") ac_srcdir="$abs_srcdir/"; unset ac_bdir; ac_inc="-I. -I$abs_srcdir" ;;
+  /*) ac_srcdir=`echo "$ext_dir"|cut -c 2-`"/"; ac_bdir=$ac_srcdir; ac_inc="-I$ac_bdir -I$abs_srcdir/$ac_bdir" ;;
+  *) ac_srcdir="$abs_srcdir/$ext_dir/"; ac_bdir="$ext_dir/"; ac_inc="-I$ac_bdir -I$ac_srcdir" ;;
+  esac
+
+
+
+  b_c_pre=$php_c_pre
+  b_cxx_pre=$php_cxx_pre
+  b_c_meta=$php_c_meta
+  b_cxx_meta=$php_cxx_meta
+  b_c_post=$php_c_post
+  b_cxx_post=$php_cxx_post
+  b_lo=$php_lo
+
+
+  old_IFS=$IFS
+  for ac_src in php_sort.c; do
+
+      IFS=.
+      set $ac_src
+      ac_obj=$1
+      IFS=$old_IFS
+
+      PHP_GLOBAL_OBJS="$PHP_GLOBAL_OBJS $ac_bdir$ac_obj.lo"
+
+      case $ac_src in
+        *.c) ac_comp="$b_c_pre $ac_extra $ac_inc $b_c_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_c_post" ;;
+        *.s) ac_comp="$b_c_pre $ac_extra $ac_inc $b_c_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_c_post" ;;
+        *.S) ac_comp="$b_c_pre $ac_extra $ac_inc $b_c_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_c_post" ;;
+        *.cpp|*.cc|*.cxx) ac_comp="$b_cxx_pre $ac_extra $ac_inc $b_cxx_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_cxx_post" ;;
+      esac
+
+    cat >>Makefile.objects<<EOF
+$ac_bdir$ac_obj.lo: $ac_srcdir$ac_src
+	$ac_comp
+EOF
+  done
+
+
+    EXT_STATIC="$EXT_STATIC php_sort;$ext_dir"
+    if test "$ext_shared" != "nocli"; then
+      EXT_CLI_STATIC="$EXT_CLI_STATIC php_sort;$ext_dir"
+    fi
+  else
+    if test "$ext_shared" = "shared" || test "$ext_shared" = "yes"; then
+      PHP_PHP_SORT_SHARED=yes
+
+  case $ext_dir in
+  "") ac_srcdir="$abs_srcdir/"; unset ac_bdir; ac_inc="-I. -I$abs_srcdir" ;;
+  /*) ac_srcdir=`echo "$ext_dir"|cut -c 2-`"/"; ac_bdir=$ac_srcdir; ac_inc="-I$ac_bdir -I$abs_srcdir/$ac_bdir" ;;
+  *) ac_srcdir="$abs_srcdir/$ext_dir/"; ac_bdir="$ext_dir/"; ac_inc="-I$ac_bdir -I$ac_srcdir" ;;
+  esac
+
+
+
+  b_c_pre=$shared_c_pre
+  b_cxx_pre=$shared_cxx_pre
+  b_c_meta=$shared_c_meta
+  b_cxx_meta=$shared_cxx_meta
+  b_c_post=$shared_c_post
+  b_cxx_post=$shared_cxx_post
+  b_lo=$shared_lo
+
+
+  old_IFS=$IFS
+  for ac_src in php_sort.c; do
+
+      IFS=.
+      set $ac_src
+      ac_obj=$1
+      IFS=$old_IFS
+
+      shared_objects_php_sort="$shared_objects_php_sort $ac_bdir$ac_obj.lo"
+
+      case $ac_src in
+        *.c) ac_comp="$b_c_pre $ac_extra $ac_inc $b_c_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_c_post" ;;
+        *.s) ac_comp="$b_c_pre $ac_extra $ac_inc $b_c_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_c_post" ;;
+        *.S) ac_comp="$b_c_pre $ac_extra $ac_inc $b_c_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_c_post" ;;
+        *.cpp|*.cc|*.cxx) ac_comp="$b_cxx_pre $ac_extra $ac_inc $b_cxx_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_cxx_post" ;;
+      esac
+
+    cat >>Makefile.objects<<EOF
+$ac_bdir$ac_obj.lo: $ac_srcdir$ac_src
+	$ac_comp
+EOF
+  done
+
+
+  install_modules="install-modules"
+  suffix=la
+
+  case $host_alias in
+    *aix*)
+      additional_flags="-Wl,-G"
+      ;;
+  esac
+
+  if test "x" = "xyes"; then
+    PHP_ZEND_EX="$PHP_ZEND_EX \$(phplibdir)/php_sort.$suffix"
+  else
+    PHP_MODULES="$PHP_MODULES \$(phplibdir)/php_sort.$suffix"
+  fi
+
+  PHP_VAR_SUBST="$PHP_VAR_SUBST shared_objects_php_sort"
+
+  cat >>Makefile.objects<<EOF
+\$(phplibdir)/php_sort.$suffix: $ext_builddir/php_sort.$suffix
+	\$(LIBTOOL) --mode=install cp $ext_builddir/php_sort.$suffix \$(phplibdir)
+
+$ext_builddir/php_sort.$suffix: \$(shared_objects_php_sort) \$(PHP_SORT_SHARED_DEPENDENCIES)
+	\$(LIBTOOL) --mode=link \$(CC) \$(COMMON_FLAGS) \$(CFLAGS_CLEAN) \$(EXTRA_CFLAGS) \$(LDFLAGS) $additional_flags -o \$@ -export-dynamic -avoid-version -prefer-pic -module -rpath \$(phplibdir) \$(EXTRA_LDFLAGS) \$(shared_objects_php_sort) \$(PHP_SORT_SHARED_LIBADD)
+
+EOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define COMPILE_DL_PHP_SORT 1
+_ACEOF
+
+    fi
+  fi
+
+  if test "$ext_shared" != "shared" && test "$ext_shared" != "yes" && test "" = "cli"; then
+    PHP_PHP_SORT_SHARED=no
+    case "$PHP_SAPI" in
+      cgi|embed|phpdbg)
+
+
+  case $ext_dir in
+  "") ac_srcdir="$abs_srcdir/"; unset ac_bdir; ac_inc="-I. -I$abs_srcdir" ;;
+  /*) ac_srcdir=`echo "$ext_dir"|cut -c 2-`"/"; ac_bdir=$ac_srcdir; ac_inc="-I$ac_bdir -I$abs_srcdir/$ac_bdir" ;;
+  *) ac_srcdir="$abs_srcdir/$ext_dir/"; ac_bdir="$ext_dir/"; ac_inc="-I$ac_bdir -I$ac_srcdir" ;;
+  esac
+
+
+
+  b_c_pre=$php_c_pre
+  b_cxx_pre=$php_cxx_pre
+  b_c_meta=$php_c_meta
+  b_cxx_meta=$php_cxx_meta
+  b_c_post=$php_c_post
+  b_cxx_post=$php_cxx_post
+  b_lo=$php_lo
+
+
+  old_IFS=$IFS
+  for ac_src in php_sort.c; do
+
+      IFS=.
+      set $ac_src
+      ac_obj=$1
+      IFS=$old_IFS
+
+      PHP_GLOBAL_OBJS="$PHP_GLOBAL_OBJS $ac_bdir$ac_obj.lo"
+
+      case $ac_src in
+        *.c) ac_comp="$b_c_pre $ac_extra $ac_inc $b_c_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_c_post" ;;
+        *.s) ac_comp="$b_c_pre $ac_extra $ac_inc $b_c_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_c_post" ;;
+        *.S) ac_comp="$b_c_pre $ac_extra $ac_inc $b_c_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_c_post" ;;
+        *.cpp|*.cc|*.cxx) ac_comp="$b_cxx_pre $ac_extra $ac_inc $b_cxx_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_cxx_post" ;;
+      esac
+
+    cat >>Makefile.objects<<EOF
+$ac_bdir$ac_obj.lo: $ac_srcdir$ac_src
+	$ac_comp
+EOF
+  done
+
+
+        EXT_STATIC="$EXT_STATIC php_sort;$ext_dir"
+        ;;
+      *)
+
+
+  case $ext_dir in
+  "") ac_srcdir="$abs_srcdir/"; unset ac_bdir; ac_inc="-I. -I$abs_srcdir" ;;
+  /*) ac_srcdir=`echo "$ext_dir"|cut -c 2-`"/"; ac_bdir=$ac_srcdir; ac_inc="-I$ac_bdir -I$abs_srcdir/$ac_bdir" ;;
+  *) ac_srcdir="$abs_srcdir/$ext_dir/"; ac_bdir="$ext_dir/"; ac_inc="-I$ac_bdir -I$ac_srcdir" ;;
+  esac
+
+
+
+  b_c_pre=$php_c_pre
+  b_cxx_pre=$php_cxx_pre
+  b_c_meta=$php_c_meta
+  b_cxx_meta=$php_cxx_meta
+  b_c_post=$php_c_post
+  b_cxx_post=$php_cxx_post
+  b_lo=$php_lo
+
+
+  old_IFS=$IFS
+  for ac_src in php_sort.c; do
+
+      IFS=.
+      set $ac_src
+      ac_obj=$1
+      IFS=$old_IFS
+
+      PHP_GLOBAL_OBJS="$PHP_GLOBAL_OBJS $ac_bdir$ac_obj.lo"
+
+      case $ac_src in
+        *.c) ac_comp="$b_c_pre $ac_extra $ac_inc $b_c_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_c_post" ;;
+        *.s) ac_comp="$b_c_pre $ac_extra $ac_inc $b_c_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_c_post" ;;
+        *.S) ac_comp="$b_c_pre $ac_extra $ac_inc $b_c_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_c_post" ;;
+        *.cpp|*.cc|*.cxx) ac_comp="$b_cxx_pre $ac_extra $ac_inc $b_cxx_meta -c $ac_srcdir$ac_src -o $ac_bdir$ac_obj.$b_lo $b_cxx_post" ;;
+      esac
+
+    cat >>Makefile.objects<<EOF
+$ac_bdir$ac_obj.lo: $ac_srcdir$ac_src
+	$ac_comp
+EOF
+  done
+
+
+        ;;
+    esac
+    EXT_CLI_STATIC="$EXT_CLI_STATIC php_sort;$ext_dir"
+  fi
+
+
+    BUILD_DIR="$BUILD_DIR $ext_builddir"
+
+
+
+  if test "$ext_builddir" = "."; then
+    PHP_PECL_EXTENSION=php_sort
+
+  PHP_VAR_SUBST="$PHP_VAR_SUBST PHP_PECL_EXTENSION"
+
+  fi
+
+fi
+
+
 enable_static=no
 enable_shared=yes
 
@@ -4883,7 +5181,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 4886 "configure"' > conftest.$ac_ext
+  echo '#line 5184 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -6291,7 +6589,7 @@ else
       LDFLAGS="$LDFLAGS -Wl,-exported_symbols_list,conftest.sym"
 
 cat > conftest.$ac_ext <<EOF
-#line 6294 "configure"
+#line 6592 "configure"
 #include "confdefs.h"
 int main() {
 ; return 0; }
@@ -6449,11 +6747,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"configure:6452: $lt_compile\"" >&5)
+   (eval echo "\"configure:6750: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "configure:6456: \$? = $ac_status" >&5
+   echo "configure:6754: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -6747,11 +7045,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"configure:6750: $lt_compile\"" >&5)
+   (eval echo "\"configure:7048: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "configure:6754: \$? = $ac_status" >&5
+   echo "configure:7052: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -6851,11 +7149,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"configure:6854: $lt_compile\"" >&5)
+   (eval echo "\"configure:7152: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "configure:6858: \$? = $ac_status" >&5
+   echo "configure:7156: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -7315,7 +7613,7 @@ _LT_EOF
        # Determine the default libpath from the value encoded in an empty executable.
 
 cat > conftest.$ac_ext <<EOF
-#line 7318 "configure"
+#line 7616 "configure"
 #include "confdefs.h"
 int main() {
 ; return 0; }
@@ -7357,7 +7655,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	 # Determine the default libpath from the value encoded in an empty executable.
 
 cat > conftest.$ac_ext <<EOF
-#line 7360 "configure"
+#line 7658 "configure"
 #include "confdefs.h"
 int main() {
 ; return 0; }
@@ -8874,7 +9172,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 8877 "configure"
+#line 9175 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -8974,7 +9272,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 8977 "configure"
+#line 9275 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10039,7 +10337,7 @@ case $host_os in
       # Determine the default libpath from the value encoded in an empty executable.
 
 cat > conftest.$ac_ext <<EOF
-#line 10042 "configure"
+#line 10340 "configure"
 #include "confdefs.h"
 int main() {
 ; return 0; }
@@ -10082,7 +10380,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	# Determine the default libpath from the value encoded in an empty executable.
 
 cat > conftest.$ac_ext <<EOF
-#line 10085 "configure"
+#line 10383 "configure"
 #include "confdefs.h"
 int main() {
 ; return 0; }
@@ -11334,11 +11632,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"configure:11337: $lt_compile\"" >&5)
+   (eval echo "\"configure:11635: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "configure:11341: \$? = $ac_status" >&5
+   echo "configure:11639: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -11438,11 +11736,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"configure:11441: $lt_compile\"" >&5)
+   (eval echo "\"configure:11739: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "configure:11445: \$? = $ac_status" >&5
+   echo "configure:11743: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
